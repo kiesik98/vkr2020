@@ -1,0 +1,204 @@
+{% extends 'base_for_site.html' %}
+
+{% block header %}Тестирование{% endblock %}
+{% load extra static %}
+{% block content %}
+    <div class="row">
+        {% include 'partials/questions_nav_table.html' %}
+    </div>
+    <div class="col-md-10">
+        <form method="post">
+            <div class="errors">
+                {% for error in errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% csrf_token %}
+            <div class="form-group">
+                <p class="lead">{{ test_question.test_question.number }}. {{ test_question.question.text }}</p>
+                {% if test_question.question.image.url != "" %}
+                    <p><img src="{{test_question.question.image.url}}"></p>
+                {% endif %}
+                <input type="hidden" name="question" value="{{ test_question.id }}">
+                {% if type == 'FREE' %}
+                    {% include 'partials/answer/free.html' %}
+                {% else %}
+                    <div class="form-check">
+                        {% for answer in answers %}
+                            <div class="form-check">
+                                {% if type == 'SINGLE' %}
+                                    {% include 'partials/answer/single.html' %}
+                                {% elif type == 'MULTIPLE' %}
+                                    {% include 'partials/answer/multiple.html' %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-primary">Ответить</button>
+                    <button class="btn btn-secondary">
+                        <a href="{% url 'app:finish' student_test.id %}" style="text-decoration: none; color: white">
+                            Завершить тест >>>
+                        </a>
+                    </button>
+                </div>
+                {% include 'partials/timer.html' %}
+            </div>
+        </form>
+    </div>
+
+<script>
+    questions_names = ['d-ичное',
+                       'Преобразуйтe',
+                       'восемь',
+                       'Декодируйте',
+                       'байтовом',
+                       'опытов',
+                       'Хемминг'
+                       ]
+
+    check_question = questions_names.find(name =>
+        document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > p").innerText.includes(name)
+    )
+
+    console.log(check_question)
+
+
+    if (check_question){
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div").hidden = true
+
+    document.getElementById("id_answer_1").hidden=true
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div > div > label").hidden = true
+    wrapper = document.querySelector("body > div > div:nth-child(3) > form >  div:nth-child(3)")
+    $(wrapper).append('<div><label> 1 часть ответа <input type="text" name="mytext1"/></label></div>');
+    $(wrapper).append('<div><label> 2 часть ответа <input type="text" name="mytext2"/></label></div>');
+    check_question = false
+
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").addEventListener('click', set_value, true)
+    } else {
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").removeEventListener('click', set_value, true)
+}
+
+    function set_value () {
+        answer = `${document.getElementsByName('mytext1')[0].value}, ${document.getElementsByName('mytext2')[0].value}`
+        console.log(answer)
+        document.querySelector("#id_answer_1").value = answer
+        document.querySelector("#id_answer_1").checked = true
+    }
+</script>
+
+<script>
+    questions_names = ['d-ичных',
+                       ]
+
+    check_question = questions_names.find(name =>
+        document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > p").innerText.includes(name)
+    )
+
+    console.log(check_question)
+
+
+    if (check_question){
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div").hidden = true
+
+    document.getElementById("id_answer_1").hidden=true
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div > div > label").hidden = true
+    wrapper = document.querySelector("body > div > div:nth-child(3) > form >  div:nth-child(3)")
+    $(wrapper).append('<div><label> Впишите ответ 1го значения <input type="text" name="mytext1"/></label></div>');
+    $(wrapper).append('<div><label> Впишите целое 2го значения <input type="text" name="mytext2"/></label></div>'); $(wrapper).append('<div><label> Впишите числитель 2го значения <input type="text" name="mytext3"/></label></div>');
+    $(wrapper).append('<div><label> Впишите знаменатель 2го значения <input type="text" name="mytext4"/></label></div>');
+    check_question = false
+
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").addEventListener('click', set_value, true)
+    } else {
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").removeEventListener('click', set_value, true)
+}
+
+    function set_value () {
+        answer = `${document.getElementsByName('mytext1')[0].value}, ${document.getElementsByName('mytext2')[0].value}, ${document.getElementsByName('mytext3')[0].value}, ${document.getElementsByName('mytext4')[0].value}`
+        console.log(answer)
+        document.querySelector("#id_answer_1").value = answer
+        document.querySelector("#id_answer_1").checked = true
+    }
+</script>
+
+<script>
+    questions_names = ['сложения'
+                       ]
+
+    check_question = questions_names.find(name =>
+        document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > p").innerText.includes(name)
+    )
+
+    console.log(check_question)
+
+
+    if (check_question){
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div").hidden = true
+
+    document.getElementById("id_answer_1").hidden=true
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div > div > label").hidden = true
+    wrapper = document.querySelector("body > div > div:nth-child(3) > form >  div:nth-child(3)")
+    $(wrapper).append('<div><label> Введите ответ а) <input type="text" name="mytext1"/></label></div>'); $(wrapper).append('<div><label> 1 Ответ ошибочен <input type="text" name="mytext2"/></label></div>');
+    $(wrapper).append('<div><label> Введите ответ б) <input type="text" name="mytext3"/></label></div>'); $(wrapper).append('<div><label> 2 Ответ ошибочен <input type="text" name="mytext4"/></label></div>');
+    $(wrapper).append('<div><label> Введите ответ с) <input type="text" name="mytext5"/></label></div>'); $(wrapper).append('<div><label> 3 Ответ ошибочен <input type="text" name="mytext6"/></label></div>');
+    check_question = false
+
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").addEventListener('click', set_value, true)
+    } else {
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").removeEventListener('click', set_value, true)
+}
+
+    function set_value () {
+        answer = `${document.getElementsByName('mytext1')[0].value}, ${document.getElementsByName('mytext2')[0].value}, ${document.getElementsByName('mytext3')[0].value}, ${document.getElementsByName('mytext4')[0].value}, ${document.getElementsByName('mytext5')[0].value}, ${document.getElementsByName('mytext6')[0].value}`
+        console.log(answer)
+        document.querySelector("#id_answer_1").value = answer
+        document.querySelector("#id_answer_1").checked = true
+    }
+</script>
+
+<script>
+    questions_names = ['суммирования'
+                       ]
+
+    check_question = questions_names.find(name =>
+        document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > p").innerText.includes(name)
+    )
+
+    console.log(check_question)
+
+
+    if (check_question){
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div").hidden = true
+
+    document.getElementById("id_answer_1").hidden=true
+    document.querySelector("body > div > div:nth-child(3) > form > div:nth-child(3) > div > div > label").hidden = true
+    wrapper = document.querySelector("body > div > div:nth-child(3) > form >  div:nth-child(3)")
+    $(wrapper).append('<div><label> Введите ответ а1) <input type="text" name="mytext1"/></label></div>'); $(wrapper).append('<div><label> Введите ответ а2) <input type="text" name="mytext2"/></label></div>'); $(wrapper).append('<div><label> Введите ответ а3) <input type="text" name="mytext3"/></label></div>');
+    $(wrapper).append('<div><label> Введите ответ б1) <input type="text" name="mytext4"/></label></div>'); $(wrapper).append('<div><label> Введите ответ б2) <input type="text" name="mytext5"/></label></div>'); $(wrapper).append('<div><label> Введите ответ б3) <input type="text" name="mytext6"/></label></div>');
+    $(wrapper).append('<div><label> Введите ответ с1) <input type="text" name="mytext7"/></label></div>'); $(wrapper).append('<div><label> Введите ответ с2) <input type="text" name="mytext8"/></label></div>'); $(wrapper).append('<div><label> Введите ответ с3) <input type="text" name="mytext9"/></label></div>');
+    check_question = false
+
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").addEventListener('click', set_value, true)
+    } else {
+    document.querySelector("body > div > div:nth-child(3) > form > div.form-group.row > div.btn-group > button.btn.btn-primary").removeEventListener('click', set_value, true)
+}
+
+    function set_value () {
+        answer = `${document.getElementsByName('mytext1')[0].value}, ${document.getElementsByName('mytext2')[0].value}, ${document.getElementsByName('mytext3')[0].value}, ${document.getElementsByName('mytext4')[0].value}, ${document.getElementsByName('mytext5')[0].value}, ${document.getElementsByName('mytext6')[0].value}, ${document.getElementsByName('mytext7')[0].value}, ${document.getElementsByName('mytext8')[0].value}, ${document.getElementsByName('mytext9')[0].value}`
+        console.log(answer)
+        document.querySelector("#id_answer_1").value = answer
+        document.querySelector("#id_answer_1").checked = true
+    }
+</script>
+{% endblock %}
+
+{% block after_body %}
+    {{ block.super }}
+    {% include 'partials/timer_script.html' %}
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base_for_site.html' %}
+
+{% block header %}
+    Домашняя страница
+{% endblock %}
+{% block content %}
+
+     <div id='head'></div>
+	<div class="chart">
+		<canvas id="myChart"></canvas>
+	</div>
+
+
+  <table id="table">
+    <thead>
+      <tr>
+        <th>ФИО</th>
+        <th>Правильные</th>
+        <th>Не правильные</th>
+        <th>Всего вопросов</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+
+    <div class="col-md-8">
+        <h2>Пройти тест</h2>
+        <hr>
+        <form method="post">
+            {% csrf_token %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                    {% if field.help_text %}
+                        <p>
+                            <small style="color: grey">{{ field.help_text }}</small>
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field }}
+            {% endfor %}
+            <input type="submit" value="Пройти тест" class="btn btn-primary">
+        </form>
+    </div>
+
+
+
+<script>
+
+message = document.querySelector("body > div > div.col-md-10 > div")
+
+var table = document.getElementById("table");
+table.hidden = true
+if (message) {
+console.log(message)
+message = message.innerText.split(' ')[2]
+
+var densityCanvas = document.getElementById("myChart");
+table.hidden = false
+var names = []
+points = []
+var getData = function() {
+  $.ajax({
+    url: "http://user123.pythonanywhere.com/results_analitics/" + message,
+    success: function(data) {
+      data = JSON.parse(data)
+
+      names = data.map(i => i.name)
+      points = data.map(i => i.points)
+
+      nice_answers = data.map(i => i.nice_answers_count)
+
+      barChart.data.labels = names
+      densityData.data = points
+      barChart.update()
+
+        document.querySelector('#table tbody').innerHTML = data.map(n => `
+
+          <tr>
+            <td align='center'>${n.name}</a></td>
+            <td align='center'>${n.nice_answers_count}</td>
+            <td align='center'>${n.errors.length}</td>
+            <td align='center' >${n.test_count_questions}</td>
+          </tr>`).join('');
+
+          const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+          data.map(n =>
+
+          document.querySelector('#head ').innerHTML = `
+            <p>Количество тестируемых: ${data.length}</p>
+            <p>Количество вопросов: ${data[0].all_questions_count}</p>
+            <p>
+              Среднее количество правильных ответов: ${(nice_answers.reduce(reducer) / nice_answers.length).toFixed(2)}
+            </p>
+            `
+          )
+
+      var names = []
+
+      return names
+    }
+  });
+};
+
+
+getData()
+
+var densityData = {
+  label: 'Результаты теста',
+  data: [],
+  backgroundColor: '#0000FF',
+};
+
+var barChart = new Chart(densityCanvas, {
+  type: 'bar',
+  data: {
+    labels: names,
+    datasets: [densityData]
+  }
+});
+}
+
+
+</script>
+
+{% endblock %}
